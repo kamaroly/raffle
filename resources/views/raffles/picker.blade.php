@@ -41,7 +41,7 @@ h3 {
 }
 
 .container {
-	width: 500px;
+	/* width: 500px; */
 	max-width: 100%;
 }
 
@@ -62,7 +62,7 @@ textarea {
 	color: #fff;
 	display: inline-block;
 	font-size: 14px;
-	padding: 10px 20px;
+	padding: 2px 4px;
 	margin: 0 5px 10px 0;
 }
 
@@ -70,175 +70,10 @@ textarea {
 	background-color: #273c75;
 }
 
-
-
-
-
-
-
-
-
-
-/* SOCIAL PANEL CSS */
-.social-panel-container {
-	position: fixed;
-	right: 0;
-	bottom: 80px;
-	transform: translateX(100%);
-	transition: transform 0.4s ease-in-out;
+.tag.won{
+    background-color: rebeccapurple
 }
 
-.social-panel-container.visible {
-	transform: translateX(-10px);
-}
-
-.social-panel {	
-	background-color: #fff;
-	border-radius: 16px;
-	box-shadow: 0 16px 31px -17px rgba(0,31,97,0.6);
-	border: 5px solid #001F61;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	font-family: 'Muli';
-	position: relative;
-	height: 169px;	
-	width: 370px;
-	max-width: calc(100% - 10px);
-}
-
-.social-panel button.close-btn {
-	border: 0;
-	color: #97A5CE;
-	cursor: pointer;
-	font-size: 20px;
-	position: absolute;
-	top: 5px;
-	right: 5px;
-}
-
-.social-panel button.close-btn:focus {
-	outline: none;
-}
-
-.social-panel p {
-	background-color: #001F61;
-	border-radius: 0 0 10px 10px;
-	color: #fff;
-	font-size: 14px;
-	line-height: 18px;
-	padding: 2px 17px 6px;
-	position: absolute;
-	top: 0;
-	left: 50%;
-	margin: 0;
-	transform: translateX(-50%);
-	text-align: center;
-	width: 235px;
-}
-
-.social-panel p i {
-	margin: 0 5px;
-}
-
-.social-panel p a {
-	color: #FF7500;
-	text-decoration: none;
-}
-
-.social-panel h4 {
-	margin: 20px 0;
-	color: #97A5CE;	
-	font-family: 'Muli';	
-	font-size: 14px;	
-	line-height: 18px;
-	text-transform: uppercase;
-}
-
-.social-panel ul {
-	display: flex;
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-}
-
-.social-panel ul li {
-	margin: 0 10px;
-}
-
-.social-panel ul li a {
-	border: 1px solid #DCE1F2;
-	border-radius: 50%;
-	color: #001F61;
-	font-size: 20px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 50px;
-	width: 50px;
-	text-decoration: none;
-}
-
-.social-panel ul li a:hover {
-	border-color: #FF6A00;
-	box-shadow: 0 9px 12px -9px #FF6A00;
-}
-
-.floating-btn {
-	border-radius: 26.5px;
-	background-color: #001F61;
-	border: 1px solid #001F61;
-	box-shadow: 0 16px 22px -17px #03153B;
-	color: #fff;
-	cursor: pointer;
-	font-size: 16px;
-	line-height: 20px;
-	padding: 12px 20px;
-	position: fixed;
-	bottom: 20px;
-	right: 20px;
-	z-index: 999;
-}
-
-.floating-btn:hover {
-	background-color: #ffffff;
-	color: #001F61;
-}
-
-.floating-btn:focus {
-	outline: none;
-}
-
-.floating-text {
-	background-color: #001F61;
-	border-radius: 10px 10px 0 0;
-	color: #fff;
-	font-family: 'Muli';
-	padding: 7px 15px;
-	position: fixed;
-	bottom: 0;
-	left: 50%;
-	transform: translateX(-50%);
-	text-align: center;
-	z-index: 998;
-}
-
-.floating-text a {
-	color: #FF7500;
-	text-decoration: none;
-}
-
-@media screen and (max-width: 480px) {
-
-	.social-panel-container.visible {
-		transform: translateX(0px);
-	}
-	
-	.floating-btn {
-		right: 10px;
-	}
-}
 </style>
 
   <script>
@@ -258,9 +93,10 @@ textarea {
 
 <body translate="no">
   <div class="container">
+      <div id="winners"></div>
 	<h3>
-		Enter all of the choices divided by a comma (','). <br>
-		Press enter when you're done.
+		Enter all names. New person's name on the new line. <br>
+		Press to roll
 	</h3>
 	<textarea id="textarea" placeholder="Enter choices here..."></textarea>	
 	<div id="tags"></div>
@@ -269,9 +105,11 @@ textarea {
 
 
   
-      <script id="rendered-js">
+<script id="rendered-js">
 const tagsEl = document.getElementById('tags');
 const textarea = document.getElementById('textarea');
+const winnersArea = document.getElementById('winners');
+var  winners   =  [];
 
 // focus by default
 textarea.focus();
@@ -294,10 +132,10 @@ textarea.addEventListener('keyup', e => {
 });
 
 function createTags(input) {
-  const tags = input.split(',').filter(tag => tag.trim() !== '').map(tag => tag.trim());
+  const tags = input.split('\n').filter(tag => tag.trim() !== '').map(tag => tag.trim());
 
   // clean up the tags first
-  tagsEl.innerHTML = '';
+//   tagsEl.innerHTML = '';
 
   // map over the tags and add them to the tagsEl container
   tags.forEach(tag => {
@@ -314,13 +152,14 @@ function randomSelect() {
   const interval = setInterval(() => {
     const randomTag = pickRandomTag();
 
+
     highlightTag(randomTag);
 
     // remove the highlight after a while
     setTimeout(() => {
       unhighlightTag(randomTag);
-    }, 100);
-  }, 100);
+    }, 50);
+  }, 50);
 
   // allow times * 100 ms for the tags to randomly "highlight" themselves
   // then pick another tag
@@ -329,8 +168,10 @@ function randomSelect() {
 
     setTimeout(() => {
       const randomTag = pickRandomTag();
-
-      highlightTag(randomTag);
+    
+        winnersArea.innerText = winnersArea.innerText + '<Br/>' +randomTag.innerText;
+        winners.push(randomTag.innerText);
+        highlightTheWinner(randomTag);
     }, 100);
   }, times * 100);
 }
@@ -340,8 +181,13 @@ function pickRandomTag() {
   return tags[Math.floor(Math.random() * tags.length)];
 }
 
+function highlightTheWinner(tag){
+     tag.classList.add('won');
+}
+
 function highlightTag(tag) {
   tag.classList.add('highlight');
+ 
 }
 
 function unhighlightTag(tag) {
