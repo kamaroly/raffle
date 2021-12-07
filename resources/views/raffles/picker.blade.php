@@ -10,10 +10,10 @@
 <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111">
 
 
-  <title>CodePen - Random Picker Visualizer - #082 of #100Days100Projects</title>
-  
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+  <title>Kasha - Random Picker</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  
   
 <style>
 @import url('https://fonts.googleapis.com/css?family=Muli:300&display=swap');
@@ -23,11 +23,6 @@
 }
 
 body {
-	background-color: #2B88F0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
 	min-height: 100vh;
 	font-family: 'Muli', sans-serif;
 	margin: 0;
@@ -35,15 +30,6 @@ body {
 	text-align: center;
 }
 
-h3 {
-	color: #fff;
-	margin: 10px 0 20px;
-}
-
-.container {
-	/* width: 500px; */
-	max-width: 100%;
-}
 
 textarea {
 	border: none;
@@ -91,18 +77,28 @@ textarea {
 
 </head>
 
-<body translate="no">
-  <div class="container">
+<body translate="no" class="bg-gray-100">
+  <img src="https://kasha.co.ke/wp-content/themes/caring/images/kasha-logo.png" class="w-32" alt="Kasha">
+<div class="grid grid-cols-3 gap-4 ">
+   <div class="border-separate border border-grey-500 p-8">
+
+      <p class="mt-1 text-lg text-gray-800 font-semibold">Enter all names. One name per line.</p>
+      <textarea id="textarea" class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter choices here..."></textarea>
+   </div>
+   <div class="border-separate border border-yellow-500  p-8">
+      <button class="w-full sm:w-auto mb-4 flex-none bg-gray-900 hover:bg-gray-700 text-white text-lg leading-6 font-semibold py-3 px-6 border border-transparent rounded-sm 
+      focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900 focus:outline-none transition-colors duration-200" onclick="randomSelect()">Press to roll</button>
+      <div id="tags"></div>
+   </div>
+   <div class="border-separate border border-green-500 p-8 bg-white">
+   
+     <img src="  https://i.pinimg.com/originals/80/71/03/807103c2fcadca24fc708ed662ef506e.jpg" class="float-left w-32"> 
+     <p class="text-3xl sm:text-5xl lg:text-6xl leading-none font-extrabold text-gray-900 tracking-tight mb-8"> 
+      
+      Winners.</p>
       <div id="winners"></div>
-	<h3>
-		Enter all names. New person's name on the new line. <br>
-		Press to roll
-	</h3>
-	<textarea id="textarea" placeholder="Enter choices here..."></textarea>	
-	<div id="tags"></div>
+   </div>
 </div>
-
-
 
   
 <script id="rendered-js">
@@ -117,7 +113,7 @@ textarea.focus();
 textarea.addEventListener('keyup', e => {
   // create a tag for all the inputs separated by a comma
   createTags(e.target.value);
-
+  e.target.value = '';
   // check if the enter key is pressed
   if (e.key === 'Enter') {
     // empty textarea
@@ -147,7 +143,7 @@ function createTags(input) {
 }
 
 function randomSelect() {
-  const times = 90;
+  const times = 20;
 
   const interval = setInterval(() => {
     const randomTag = pickRandomTag();
@@ -158,8 +154,8 @@ function randomSelect() {
     // remove the highlight after a while
     setTimeout(() => {
       unhighlightTag(randomTag);
-    }, 50);
-  }, 50);
+    }, 10);
+  }, 10);
 
   // allow times * 100 ms for the tags to randomly "highlight" themselves
   // then pick another tag
@@ -168,10 +164,12 @@ function randomSelect() {
 
     setTimeout(() => {
       const randomTag = pickRandomTag();
-    
-        winnersArea.innerText = winnersArea.innerText + '<Br/>' +randomTag.innerText;
-        winners.push(randomTag.innerText);
-        highlightTheWinner(randomTag);
+      
+      winnersArea.innerHTML  = winnersArea.innerHTML + "<div class='bg-yellow-500 p-1 m-2'>"
+          +'<img src="https://cdn.iconscout.com/icon/free/png-256/winner-trophy-cup-prize-award-best-first-achievement-29309.png" class="float-left w-8">'
+          + randomTag.innerHTML + "</div>";
+        
+      highlightTheWinner(randomTag);
     }, 100);
   }, times * 100);
 }
